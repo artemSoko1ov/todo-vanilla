@@ -13,7 +13,6 @@ class TodoRenderer {
 
   render(state: TodoViewState) {
     this.renderEmptyState(state.tasks, state.visibleTasks, state.searchQuery)
-    console.log('ren', state)
     this.renderTasks(state.visibleTasks)
     this.renderTotal(state.tasks.length)
     this.renderDeleteAllButton(state.tasks.length)
