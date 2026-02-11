@@ -19,38 +19,37 @@ class TodoRenderer {
   }
 
   renderTasks(tasks: TodoState['tasks']) {
-    this.clearTodoList()
-
-    this.dom.todoListElement.innerHTML = tasks
-      .map(this.createTaskElement)
-      .join('')
+    const items = tasks.map((task) => this.createTaskElement(task))
+    this.dom.todoListElement.replaceChildren(...items)
   }
 
-  clearTodoList() {
-    return (this.dom.todoListElement.innerHTML = '')
-  }
-
-  createTaskElement(task: Task): string {
+  createTaskElement(task: Task): HTMLLIElement {
     const { id, title, completed } = task
 
-    return `
-      <li class="todo-item"  data-id="${id}" data-js-todo-task>
-        <input
-          class="todo-item__checkbox"
-          type="checkbox"
-          data-js-todo-toggle
-          ${completed ? 'checked' : ''}
-        />
-        <span class="todo-item__label">${title}</span>
-        <button
-          class="todo-item__delete-button"
-          type="button"
-          data-js-todo-delete
-        >
-          ✕
-        </button>
-      </li>
-    `
+    const li = document.createElement('li')
+    li.classList.add('todo-item')
+    li.dataset.id = id
+    li.setAttribute('data-js-todo-task', '')
+
+    const input = document.createElement('input')
+    input.classList.add('todo-item__checkbox')
+    input.type = 'checkbox'
+    input.checked = completed
+    input.setAttribute('data-js-todo-toggle', '')
+
+    const span = document.createElement('span')
+    span.classList.add('todo-item__label')
+    span.textContent = title
+
+    const button = document.createElement('button')
+    button.classList.add('todo-item__delete-button')
+    button.type = 'button'
+    button.textContent = '✕'
+    button.setAttribute('data-js-todo-delete', '')
+
+    li.append(input, span, button)
+
+    return li
   }
 
   renderEmptyState(tasks: Task[], visibleTasks: Task[], searchQuery: string) {
