@@ -48,8 +48,12 @@ class TodoController {
     const taskId = taskElement.dataset.id
     if (!taskId) return
 
-    this.store.deleteTask(taskId)
-    this.updateView()
+    taskElement.classList.add('is-disappearing')
+
+    setTimeout(() => {
+      this.store.deleteTask(taskId)
+      this.updateView()
+    }, 400)
   }
 
   handleDeleteAllTask = () => {
