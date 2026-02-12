@@ -75,6 +75,35 @@ class TodoRenderer {
       tasksCount > 0,
     )
   }
+
+  renderDetailsTask(task: Task) {
+    this.dom.rootElement.replaceChildren()
+
+    const div = document.createElement('div')
+    div.classList.add('task-details')
+    div.dataset.id = task.id
+
+    const backLink = document.createElement('a')
+    backLink.classList.add('task-details__back')
+    backLink.textContent = '← Назад'
+    backLink.href = '/'
+
+    const title = document.createElement('h2')
+    title.classList.add('task-details__title')
+    title.textContent = task.title
+
+    const status = document.createElement('span')
+    status.classList.add('task-details__status')
+    status.classList.add(
+      task.completed
+        ? 'task-details__status--done'
+        : 'task-details__status--todo',
+    )
+    status.textContent = task.completed ? 'Выполнена' : 'Не выполнена'
+
+    div.append(backLink, title, status)
+    this.dom.rootElement.append(div)
+  }
 }
 
 export default TodoRenderer

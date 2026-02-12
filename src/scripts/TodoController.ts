@@ -40,13 +40,13 @@ class TodoController {
   }
 
   handleDeleteTask = (event: Event) => {
+    if (!this.dom.getDeleteButton(event.target)) return
+
+    const taskId = this.getTaskIdFromEvent(event)
+    if (!taskId) return
+
     const taskElement = this.dom.getTaskElement(event.target)
     if (!taskElement) return
-    const button = this.dom.getDeleteButton(event.target)
-    if (!button) return
-
-    const taskId = taskElement.dataset.id
-    if (!taskId) return
 
     taskElement.classList.add('is-disappearing')
 
@@ -56,26 +56,35 @@ class TodoController {
     }, 400)
   }
 
-  handleDeleteAllTask = () => {
+  handleDeleteAllTasks = () => {
     this.store.deleteAll()
     this.updateView()
   }
 
   handleToggleTaskCompleted = (event: Event) => {
-    const taskElement = this.dom.getTaskElement(event.target)
-    if (!taskElement) return
+    if (!this.dom.getToggleCheckbox(event.target)) return
 
-    const checkbox = this.dom.getToggleCheckbox(event.target)
-    if (!checkbox) return
-
-    const taskId = taskElement.dataset.id
+    const taskId = this.getTaskIdFromEvent(event)
     if (!taskId) return
 
     this.store.toggleCompleted(taskId)
     this.updateView()
   }
 
+  handleDetailsTask = (event: Event) => {
+    const taskId = this.getTaskIdFromEvent(event)
+    if (!taskId) return
+
+    const task = this.store.getTaskById(taskId)
+    if (!task) return
+
+    this.renderer.renderDetailsTask(task)
+  }
+
   handleTodoListClick = (event: Event) => {
+    const taskElement = this.dom.getTaskElement(event.target)
+    if (!taskElement) return
+
     if (this.dom.getDeleteButton(event.target)) {
       this.handleDeleteTask(event)
       return
@@ -83,7 +92,10 @@ class TodoController {
 
     if (this.dom.getToggleCheckbox(event.target)) {
       this.handleToggleTaskCompleted(event)
+      return
     }
+
+    this.handleDetailsTask(event)
   }
 
   private updateView() {
@@ -94,6 +106,13 @@ class TodoController {
       ...state,
       visibleTasks,
     })
+  }
+
+  private getTaskIdFromEvent(event: Event): string | null {
+    const taskElement = this.dom.getTaskElement(event.target)
+    if (!taskElement) return null
+
+    return taskElement.dataset.id ?? null
   }
 
   bindEvents() {
@@ -108,7 +127,7 @@ class TodoController {
     )
     this.dom.deleteAllButtonElement?.addEventListener(
       'click',
-      this.handleDeleteAllTask,
+      this.handleDeleteAllTasks,
     )
   }
 }

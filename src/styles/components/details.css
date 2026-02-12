@@ -1,0 +1,41 @@
+.task-details {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.task-details__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  width: fit-content;
+  text-decoration: none;
+  color: var(--color-black);
+  font-weight: 500;
+
+  opacity: 0.8;
+  transition: opacity var(--transition-duration);
+}
+
+.task-details__back:hover {
+  opacity: 1;
+}
+
+.task-details__title {
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.task-details__status {
+  display: inline-flex;
+  width: fit-content;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+}

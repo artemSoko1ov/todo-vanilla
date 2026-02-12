@@ -6,6 +6,7 @@
   border: var(--border);
   border-radius: var(--border-radius);
   transition-duration: var(--transition-duration);
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-gray-1);
@@ -66,7 +67,7 @@
 
 .todo-item__label {
   width: 100%;
-  pointer-events: none;
+  color: var(--color-black);
 }
 
 .todo-item__delete-button {

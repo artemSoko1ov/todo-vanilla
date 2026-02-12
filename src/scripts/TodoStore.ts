@@ -94,6 +94,10 @@ class TodoStore {
     }
     this.saveTasks()
   }
+
+  getTaskById(id: TaskId): Task | null {
+    return this.state.tasks.find((task) => task.id === id) ?? null
+  }
 }
 
 export default TodoStore
