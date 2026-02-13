@@ -1,11 +1,9 @@
 import type { Task } from './types/Task.ts'
 
 export class TodoApi {
-  baseUrl: string
+  private baseUrl = import.meta.env.VITE_API_BASE_URL
 
-  constructor() {
-    this.baseUrl = 'http://localhost:3001'
-  }
+  constructor() {}
 
   async getTasks(): Promise<Task[]> {
     try {
@@ -15,15 +13,22 @@ export class TodoApi {
     } catch {
       throw new Error('Failed to fetch tasks')
     }
+  }
 
-    // return fetch(`${this.baseUrl}/tasks`)
-    //   .then((response) => {
-    //     return response.json()
-    //   })
-    //   .then((data) => data as Task[])
-    //   .catch(() => {
-    //     throw new Error('Failed to fetch tasks')
-    //   })
+  async createTask(newTask: Task) {
+    try {
+      const response = await fetch(`${this.baseUrl}/tasks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTask),
+      })
+      const data = await response.json()
+      return data as Task
+    } catch {
+      throw new Error('Failed to fetch tasks')
+    }
   }
 
   updateTask() {}

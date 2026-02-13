@@ -24,7 +24,7 @@ class TodoStore {
     return this.state
   }
 
-  saveTasks() {
+  saveTasksOnLocalStorage() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.state.tasks))
   }
 
@@ -37,7 +37,7 @@ class TodoStore {
         tasks: dataFromApi,
       }
 
-      this.saveTasks()
+      this.saveTasksOnLocalStorage()
     } catch {
       const dataFromLocalStorage = localStorage.getItem(this.storageKey)
 
@@ -56,7 +56,7 @@ class TodoStore {
     }
   }
 
-  addTask(title: string) {
+  async addTask(title: string) {
     const normalizedTitle = title.trim()
 
     if (!normalizedTitle) return
@@ -72,7 +72,8 @@ class TodoStore {
       tasks: [...this.state.tasks, newTask],
     }
 
-    this.saveTasks()
+    await this.api.createTask(newTask)
+    this.saveTasksOnLocalStorage()
   }
 
   setSearchQuery(query: string) {
@@ -97,7 +98,7 @@ class TodoStore {
       ...this.state,
       tasks: this.state.tasks.filter((task) => task.id !== id),
     }
-    this.saveTasks()
+    this.saveTasksOnLocalStorage()
   }
 
   deleteAll() {
@@ -105,7 +106,7 @@ class TodoStore {
       ...this.state,
       tasks: [],
     }
-    this.saveTasks()
+    this.saveTasksOnLocalStorage()
   }
 
   toggleCompleted(id: TaskId) {
@@ -115,7 +116,7 @@ class TodoStore {
         task.id === id ? { ...task, completed: !task.completed } : task,
       ),
     }
-    this.saveTasks()
+    this.saveTasksOnLocalStorage()
   }
 
   getTaskById(id: TaskId): Task | null {
