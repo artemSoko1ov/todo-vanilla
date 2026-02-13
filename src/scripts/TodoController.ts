@@ -17,6 +17,11 @@ class TodoController {
     this.renderer = renderer
 
     this.bindEvents()
+    void this.init()
+  }
+
+  private async init() {
+    await this.store.init()
     this.updateView()
   }
 

@@ -1,15 +1,23 @@
 import type { Task, TaskId } from './types/Task.ts'
 import type { TodoState } from './types/TodoState.ts'
+import { TodoApi } from './TodoApi.ts'
 
 class TodoStore {
   private state: TodoState
   private storageKey = import.meta.env.VITE_TODO_STORAGE_KEY
-  constructor() {
+  private api: TodoApi
+
+  constructor(api = new TodoApi()) {
+    this.api = api
+
     this.state = {
       tasks: [],
       searchQuery: '',
     }
-    this.loadTasks()
+  }
+
+  async init() {
+    await this.loadTasks()
   }
 
   getState(): TodoState {
@@ -20,16 +28,31 @@ class TodoStore {
     localStorage.setItem(this.storageKey, JSON.stringify(this.state.tasks))
   }
 
-  loadTasks() {
-    const data = localStorage.getItem(this.storageKey)
-    if (!data) {
-      this.state.tasks = []
-      return
-    }
+  async loadTasks() {
+    try {
+      const dataFromApi = await this.api.getTasks()
 
-    this.state = {
-      ...this.state,
-      tasks: JSON.parse(data),
+      this.state = {
+        ...this.state,
+        tasks: dataFromApi,
+      }
+
+      this.saveTasks()
+    } catch {
+      const dataFromLocalStorage = localStorage.getItem(this.storageKey)
+
+      if (!dataFromLocalStorage) {
+        this.state = {
+          ...this.state,
+          tasks: [],
+        }
+        return
+      }
+
+      this.state = {
+        ...this.state,
+        tasks: JSON.parse(dataFromLocalStorage),
+      }
     }
   }
 

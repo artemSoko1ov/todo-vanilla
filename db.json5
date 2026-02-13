@@ -1,0 +1,24 @@
+{
+  tasks: [
+    {
+      id: 'd0c5db36-4368-49da-b0a8-38ee3db741fc',
+      title: 'подключить к серверу',
+      completed: false,
+    },
+    {
+      id: '5d10fd1f-8c55-4a6d-a472-53c9df58ca00',
+      title: 'настроить ci/cd',
+      completed: false,
+    },
+    {
+      id: '79379bb5-6320-4afe-bf6b-41f50145bbd0',
+      title: 'подключить jest',
+      completed: false,
+    },
+    {
+      id: '79379bb5-6320-41fe-bf6b-41f50145bbd0',
+      title: 'ЗАДАЧИ ИЗ БД',
+      completed: false,
+    },
+  ],
+}

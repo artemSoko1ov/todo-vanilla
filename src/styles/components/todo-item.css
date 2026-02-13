@@ -36,6 +36,7 @@
   margin: 0;
   border: 1px solid var(--color-gray-4);
   border-radius: 4px;
+  cursor: pointer;
 
   &:checked {
     background-color: var(--color-dark-2);
