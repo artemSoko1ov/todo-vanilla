@@ -33,19 +33,19 @@ class TodoDOM {
     this.todoListElement = this.getRequiredElement(
       this.selectors.todoList,
     ) as HTMLElement
-    this.searchTaskFormElement = document.querySelector(
+    this.searchTaskFormElement = this.getRequiredElement(
       this.selectors.searchTaskForm,
     ) as HTMLFormElement
-    this.searchTaskInputElement = document.querySelector(
+    this.searchTaskInputElement = this.getRequiredElement(
       this.selectors.searchTaskInput,
     ) as HTMLInputElement
     this.totalTasksElement = this.getRequiredElement(
       this.selectors.totalTasks,
     ) as HTMLElement
-    this.deleteAllButtonElement = document.querySelector(
+    this.deleteAllButtonElement = this.getRequiredElement(
       this.selectors.deleteAllButton,
     ) as HTMLButtonElement
-    this.emptyMessageElement = document.querySelector(
+    this.emptyMessageElement = this.getRequiredElement(
       this.selectors.emptyMessage,
     ) as HTMLElement
   }
