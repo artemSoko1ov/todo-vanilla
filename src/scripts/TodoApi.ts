@@ -31,7 +31,24 @@ export class TodoApi {
     }
   }
 
-  updateTask() {}
+  async updateTask(updatedTask: Task) {
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/tasks/${updatedTask.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedTask),
+        },
+      )
+      const data = await response.json()
+      return data as Task
+    } catch {
+      throw new Error('Failed to update task')
+    }
+  }
 
   async deleteTask(id: TaskId) {
     try {

@@ -72,7 +72,10 @@ class TodoController {
     const taskId = this.getTaskIdFromEvent(event)
     if (!taskId) return
 
-    this.store.toggleCompleted(taskId)
+    const task = this.store.getTaskById(taskId)
+    if (!task) return
+
+    this.store.toggleCompleted(task)
     this.updateView()
   }
 
