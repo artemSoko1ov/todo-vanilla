@@ -1,13 +1,13 @@
-import type { Task } from './types/Task.ts'
+import type { Task, TaskId } from './types/Task.ts'
 
 export class TodoApi {
-  private baseUrl = import.meta.env.VITE_API_BASE_URL
+  private apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
   constructor() {}
 
-  async getTasks(): Promise<Task[]> {
+  async fetchTasks(): Promise<Task[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/tasks`)
+      const response = await fetch(`${this.apiBaseUrl}/tasks`)
       const data = await response.json()
       return data as Task[]
     } catch {
@@ -17,7 +17,7 @@ export class TodoApi {
 
   async createTask(newTask: Task) {
     try {
-      const response = await fetch(`${this.baseUrl}/tasks`, {
+      const response = await fetch(`${this.apiBaseUrl}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,13 +27,21 @@ export class TodoApi {
       const data = await response.json()
       return data as Task
     } catch {
-      throw new Error('Failed to fetch tasks')
+      throw new Error('Failed to create task')
     }
   }
 
   updateTask() {}
 
-  deleteTask() {}
+  async deleteTask(id: TaskId) {
+    try {
+      await fetch(`${this.apiBaseUrl}/tasks/${id}`, {
+        method: 'DELETE',
+      })
+    } catch {
+      throw new Error('Failed to delete task')
+    }
+  }
 
-  deleteAllTask() {}
+  // async deleteAllTasks() {}
 }

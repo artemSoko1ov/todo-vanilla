@@ -24,20 +24,20 @@ class TodoStore {
     return this.state
   }
 
-  saveTasksOnLocalStorage() {
+  saveTasksToLocalStorage() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.state.tasks))
   }
 
   async loadTasks() {
     try {
-      const dataFromApi = await this.api.getTasks()
+      const dataFromApi = await this.api.fetchTasks()
 
       this.state = {
         ...this.state,
         tasks: dataFromApi,
       }
 
-      this.saveTasksOnLocalStorage()
+      this.saveTasksToLocalStorage()
     } catch {
       const dataFromLocalStorage = localStorage.getItem(this.storageKey)
 
@@ -73,7 +73,7 @@ class TodoStore {
     }
 
     await this.api.createTask(newTask)
-    this.saveTasksOnLocalStorage()
+    this.saveTasksToLocalStorage()
   }
 
   setSearchQuery(query: string) {
@@ -93,12 +93,13 @@ class TodoStore {
     )
   }
 
-  deleteTask(id: TaskId) {
+  async deleteTask(id: TaskId) {
     this.state = {
       ...this.state,
       tasks: this.state.tasks.filter((task) => task.id !== id),
     }
-    this.saveTasksOnLocalStorage()
+    await this.api.deleteTask(id)
+    this.saveTasksToLocalStorage()
   }
 
   deleteAll() {
@@ -106,7 +107,7 @@ class TodoStore {
       ...this.state,
       tasks: [],
     }
-    this.saveTasksOnLocalStorage()
+    this.saveTasksToLocalStorage()
   }
 
   toggleCompleted(id: TaskId) {
@@ -116,7 +117,7 @@ class TodoStore {
         task.id === id ? { ...task, completed: !task.completed } : task,
       ),
     }
-    this.saveTasksOnLocalStorage()
+    this.saveTasksToLocalStorage()
   }
 
   getTaskById(id: TaskId): Task | null {
