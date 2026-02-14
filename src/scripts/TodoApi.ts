@@ -1,6 +1,6 @@
 import type { Task, TaskId } from './types/Task.ts'
 
-export class TodoApi {
+class TodoApi {
   private apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
   constructor() {}
@@ -62,3 +62,5 @@ export class TodoApi {
 
   // async deleteAllTasks() {}
 }
+
+export default TodoApi

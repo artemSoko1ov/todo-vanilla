@@ -1,6 +1,6 @@
-import type { Task, TaskId } from './types/Task.ts'
-import type { TodoState } from './types/TodoState.ts'
-import { TodoApi } from './TodoApi.ts'
+import type {Task, TaskId} from './types/Task.ts'
+import type {TodoState} from './types/TodoState.ts'
+import TodoApi from './TodoApi.ts'
 
 class TodoStore {
   private state: TodoState
@@ -55,7 +55,7 @@ class TodoStore {
 
       this.state = {
         ...this.state,
-        tasks: JSON.parse(dataFromLocalStorage),
+        tasks: this.validateTasks(dataFromLocalStorage),
       }
     }
   }
@@ -88,7 +88,7 @@ class TodoStore {
   }
 
   getFilteredTasks(): Task[] {
-    const { tasks, searchQuery } = this.state
+    const {tasks, searchQuery} = this.state
 
     if (!searchQuery.trim()) return tasks
 
@@ -116,7 +116,7 @@ class TodoStore {
   }
 
   async toggleCompleted(task: Task) {
-    const updatedTask = { ...task, completed: !task.completed }
+    const updatedTask = {...task, completed: !task.completed}
 
     this.state = {
       ...this.state,
@@ -125,6 +125,19 @@ class TodoStore {
     this.saveTasksToLocalStorage()
 
     await this.api.updateTask(updatedTask)
+  }
+
+  private validateTasks(raw: string | null): Task[] {
+    if (!raw) {
+      return []
+    }
+    try {
+      const parsed = JSON.parse(raw)
+
+      return parsed as Task[]
+    } catch {
+      return []
+    }
   }
 }
 
