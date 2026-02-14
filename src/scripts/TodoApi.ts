@@ -60,7 +60,14 @@ class TodoApi {
     }
   }
 
-  // async deleteAllTasks() {}
+  async deleteAllTasks() {
+    try {
+      const tasks = await this.fetchTasks()
+      await Promise.all(tasks.map((task) => this.deleteTask(task.id)))
+    } catch {
+      throw new Error('Failed to delete all tasks')
+    }
+  }
 }
 
 export default TodoApi

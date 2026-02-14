@@ -107,12 +107,13 @@ class TodoStore {
     await this.api.deleteTask(id)
   }
 
-  deleteAll() {
+  async deleteAll() {
     this.state = {
       ...this.state,
       tasks: [],
     }
     this.saveTasksToLocalStorage()
+    await this.api.deleteAllTasks()
   }
 
   async toggleCompleted(task: Task) {

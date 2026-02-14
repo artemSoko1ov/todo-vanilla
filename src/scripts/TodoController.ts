@@ -61,8 +61,8 @@ class TodoController {
     }, 400)
   }
 
-  handleDeleteAllTasks = () => {
-    this.store.deleteAll()
+  handleDeleteAllTasks = async () => {
+    await this.store.deleteAll()
     this.updateView()
   }
 
