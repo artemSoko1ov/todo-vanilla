@@ -25,13 +25,13 @@ class TodoController {
     this.updateView()
   }
 
-  handleAddTask = (event: Event) => {
+  handleAddTask = async (event: Event) => {
     event.preventDefault()
 
     const title = this.dom.getValueAddInput()
     if (!title) return
 
-    this.store.addTask(title)
+    await this.store.addTask(title)
     this.dom.clearNewTaskInput()
     this.updateView()
   }
@@ -44,7 +44,7 @@ class TodoController {
     this.updateView()
   }
 
-  handleDeleteTask = (event: Event) => {
+  handleDeleteTask = async (event: Event) => {
     if (!this.dom.getDeleteButton(event.target)) return
 
     const taskId = this.getTaskIdFromEvent(event)
@@ -55,8 +55,8 @@ class TodoController {
 
     taskElement.classList.add('is-disappearing')
 
-    setTimeout(() => {
-      this.store.deleteTask(taskId)
+    setTimeout(async () => {
+      await this.store.deleteTask(taskId)
       this.updateView()
     }, 400)
   }
@@ -66,7 +66,7 @@ class TodoController {
     this.updateView()
   }
 
-  handleToggleTaskCompleted = (event: Event) => {
+  handleToggleTaskCompleted = async (event: Event) => {
     if (!this.dom.getToggleCheckbox(event.target)) return
 
     const taskId = this.getTaskIdFromEvent(event)
@@ -75,7 +75,7 @@ class TodoController {
     const task = this.store.getTaskById(taskId)
     if (!task) return
 
-    this.store.toggleCompleted(task)
+    await this.store.toggleCompleted(task)
     this.updateView()
   }
 
@@ -89,17 +89,17 @@ class TodoController {
     this.renderer.renderDetailsTask(task)
   }
 
-  handleTodoListClick = (event: Event) => {
+  handleTodoListClick = async (event: Event) => {
     const taskElement = this.dom.getTaskElement(event.target)
     if (!taskElement) return
 
     if (this.dom.getDeleteButton(event.target)) {
-      this.handleDeleteTask(event)
+      await this.handleDeleteTask(event)
       return
     }
 
     if (this.dom.getToggleCheckbox(event.target)) {
-      this.handleToggleTaskCompleted(event)
+      await this.handleToggleTaskCompleted(event)
       return
     }
 
@@ -124,19 +124,18 @@ class TodoController {
   }
 
   bindEvents() {
-    this.dom.newTaskFormElement?.addEventListener('submit', this.handleAddTask)
-    this.dom.searchTaskInputElement?.addEventListener(
-      'input',
-      this.handleSearchTask,
-    )
-    this.dom.todoListElement?.addEventListener(
-      'click',
-      this.handleTodoListClick,
-    )
-    this.dom.deleteAllButtonElement?.addEventListener(
-      'click',
-      this.handleDeleteAllTasks,
-    )
+    this.dom.newTaskFormElement?.addEventListener('submit', async (event) => {
+      await this.handleAddTask(event)
+    })
+    this.dom.searchTaskInputElement?.addEventListener('input', () => {
+      void this.handleSearchTask()
+    })
+    this.dom.todoListElement?.addEventListener('click', (event) => {
+      void this.handleTodoListClick(event)
+    })
+    this.dom.deleteAllButtonElement?.addEventListener('click', () => {
+      void this.handleDeleteAllTasks()
+    })
   }
 }
 
