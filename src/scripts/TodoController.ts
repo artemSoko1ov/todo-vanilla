@@ -1,18 +1,18 @@
-import TodoStore from './TodoStore.ts'
 import TodoDOM from './TodoDOM.ts'
 import TodoRenderer from './TodoRenderer.ts'
+import TodoService from './TodoService.ts'
 
 class TodoController {
-  store: TodoStore
+  service: TodoService
   dom: TodoDOM
   renderer: TodoRenderer
 
   constructor(
-    store = new TodoStore(),
+    service = new TodoService(),
     dom = new TodoDOM(),
     renderer = new TodoRenderer(dom),
   ) {
-    this.store = store
+    this.service = service
     this.dom = dom
     this.renderer = renderer
 
@@ -21,7 +21,7 @@ class TodoController {
   }
 
   private async init() {
-    await this.store.init()
+    await this.service.init()
     this.updateView()
   }
 
@@ -31,7 +31,7 @@ class TodoController {
     const title = this.dom.getValueAddInput()
     if (!title) return
 
-    await this.store.addTask(title)
+    await this.service.addTask(title)
     this.dom.clearNewTaskInput()
     this.updateView()
   }
@@ -39,7 +39,7 @@ class TodoController {
   handleSearchTask = () => {
     const titleSearch = this.dom.getValueSearchInput()
 
-    this.store.setSearchQuery(titleSearch ?? '')
+    this.service.setSearchQuery(titleSearch ?? '')
 
     this.updateView()
   }
@@ -55,14 +55,15 @@ class TodoController {
 
     taskElement.classList.add('is-disappearing')
 
-    setTimeout(async () => {
-      await this.store.deleteTask(taskId)
-      this.updateView()
+    setTimeout(() => {
+      void this.service.deleteTask(taskId).then(() => {
+        this.updateView()
+      })
     }, 400)
   }
 
   handleDeleteAllTasks = async () => {
-    await this.store.deleteAll()
+    await this.service.deleteAll()
     this.updateView()
   }
 
@@ -72,10 +73,7 @@ class TodoController {
     const taskId = this.getTaskIdFromEvent(event)
     if (!taskId) return
 
-    const task = this.store.getTaskById(taskId)
-    if (!task) return
-
-    await this.store.toggleCompleted(task)
+    await this.service.toggleCompleted(taskId)
     this.updateView()
   }
 
@@ -83,7 +81,7 @@ class TodoController {
     const taskId = this.getTaskIdFromEvent(event)
     if (!taskId) return
 
-    const task = this.store.getTaskById(taskId)
+    const task = this.service.getTaskById(taskId)
     if (!task) return
 
     this.renderer.renderDetailsTask(task)
@@ -107,8 +105,8 @@ class TodoController {
   }
 
   private updateView() {
-    const visibleTasks = this.store.getFilteredTasks()
-    const state = this.store.getState()
+    const visibleTasks = this.service.getFilteredTasks()
+    const state = this.service.getState()
 
     this.renderer.render({
       ...state,
