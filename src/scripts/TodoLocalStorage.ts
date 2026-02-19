@@ -16,7 +16,11 @@ class TodoLocalStorage {
   }
 
   save(tasks: Task[]) {
-    localStorage.setItem(this.storageKey, JSON.stringify(tasks))
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(tasks))
+    } catch {
+      console.warn('Cannot save tasks to LocalStorage')
+    }
   }
 
   clear() {

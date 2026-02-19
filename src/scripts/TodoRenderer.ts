@@ -18,7 +18,7 @@ class TodoRenderer {
     this.renderDeleteAllButton(state.tasks.length)
   }
 
-  renderTasks(tasks: TodoState['tasks']) {
+  renderTasks(tasks: Task[]) {
     const items = tasks.map((task) => this.createTaskElement(task))
     this.dom.todoListElement.replaceChildren(...items)
   }
@@ -52,7 +52,11 @@ class TodoRenderer {
     return li
   }
 
-  renderEmptyState(tasks: Task[], visibleTasks: Task[], searchQuery: string) {
+  renderEmptyState(
+    tasks: Task[],
+    visibleTasks: Task[],
+    searchQuery: TodoState['searchQuery'],
+  ) {
     let message = ''
 
     if (tasks.length === 0) {
@@ -76,7 +80,7 @@ class TodoRenderer {
     )
   }
 
-  renderDetailsTask(task: Task) {
+  renderTaskDetails(task: Task) {
     this.dom.rootElement.replaceChildren()
 
     const div = document.createElement('div')

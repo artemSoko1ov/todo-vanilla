@@ -1,16 +1,15 @@
 class TodoDOM {
-  rootElement: Element
+  rootElement: HTMLElement
   newTaskFormElement: HTMLFormElement
   newTaskInputElement: HTMLInputElement
   todoListElement: HTMLElement
-
   searchTaskFormElement: HTMLFormElement
   searchTaskInputElement: HTMLInputElement
   totalTasksElement: HTMLElement
   deleteAllButtonElement: HTMLButtonElement
   emptyMessageElement: HTMLElement
 
-  private selectors = {
+  private readonly selectors = {
     root: '[data-js-todo]',
     newTaskForm: '[data-js-todo-new-task-form]',
     newTaskInput: '[data-js-todo-new-task-input]',
@@ -20,74 +19,84 @@ class TodoDOM {
     deleteAllButton: '[data-js-todo-delete-all-button]',
     todoList: '[data-js-todo-list]',
     emptyMessage: '[data-js-todo-empty-message]',
+    task: '[data-js-todo-task]',
+    taskDeleteButton: '[data-js-todo-delete]',
+    taskToggleCheckbox: '[data-js-todo-toggle]',
   }
 
   constructor() {
-    this.rootElement = this.getRequiredElement(this.selectors.root)
-    this.newTaskFormElement = this.getRequiredElement(
+    const root = document.querySelector<HTMLElement>(this.selectors.root)
+    if (!root) {
+      throw new Error(
+        `TodoDOM: root element not found for selector "${this.selectors.root}"`,
+      )
+    }
+    this.rootElement = root
+
+    this.newTaskFormElement = this.getRequiredElement<HTMLFormElement>(
       this.selectors.newTaskForm,
-    ) as HTMLFormElement
-    this.newTaskInputElement = this.getRequiredElement(
+    )
+    this.newTaskInputElement = this.getRequiredElement<HTMLInputElement>(
       this.selectors.newTaskInput,
-    ) as HTMLInputElement
-    this.todoListElement = this.getRequiredElement(
+    )
+    this.todoListElement = this.getRequiredElement<HTMLElement>(
       this.selectors.todoList,
-    ) as HTMLElement
-    this.searchTaskFormElement = this.getRequiredElement(
+    )
+    this.searchTaskFormElement = this.getRequiredElement<HTMLFormElement>(
       this.selectors.searchTaskForm,
-    ) as HTMLFormElement
-    this.searchTaskInputElement = this.getRequiredElement(
+    )
+    this.searchTaskInputElement = this.getRequiredElement<HTMLInputElement>(
       this.selectors.searchTaskInput,
-    ) as HTMLInputElement
-    this.totalTasksElement = this.getRequiredElement(
+    )
+    this.totalTasksElement = this.getRequiredElement<HTMLElement>(
       this.selectors.totalTasks,
-    ) as HTMLElement
-    this.deleteAllButtonElement = this.getRequiredElement(
+    )
+    this.deleteAllButtonElement = this.getRequiredElement<HTMLButtonElement>(
       this.selectors.deleteAllButton,
-    ) as HTMLButtonElement
-    this.emptyMessageElement = this.getRequiredElement(
+    )
+    this.emptyMessageElement = this.getRequiredElement<HTMLElement>(
       this.selectors.emptyMessage,
-    ) as HTMLElement
+    )
   }
 
-  private getRequiredElement(selector: string): Element {
-    const element = document.querySelector(selector)
+  private getRequiredElement<T extends Element>(selector: string): T {
+    const element = this.rootElement.querySelector(selector)
     if (!element) {
       throw new Error(`TodoDOM: element not found for selector "${selector}"`)
     }
-    return element
+    return element as T
   }
 
-  getValueAddInput() {
+  getNewTaskTitle(): string | null {
     const value = this.newTaskInputElement.value.trim()
     return value.length > 0 ? value : null
   }
 
-  clearNewTaskInput() {
+  clearNewTaskInput(): void {
     this.newTaskInputElement.value = ''
   }
 
-  getValueSearchInput() {
+  getSearchQuery(): string | null {
     const value = this.searchTaskInputElement.value.trim()
-    return value.length > 0 ? value : null
+    return value.length > 0 ? value : ''
   }
 
   getTaskElement(target: EventTarget | null): HTMLElement | null {
     if (!(target instanceof HTMLElement)) return null
 
-    return target.closest<HTMLElement>('[data-js-todo-task]')
+    return target.closest<HTMLElement>(this.selectors.task)
   }
 
   getDeleteButton(target: EventTarget | null): HTMLButtonElement | null {
     if (!(target instanceof HTMLElement)) return null
 
-    return target.closest<HTMLButtonElement>('[data-js-todo-delete]')
+    return target.closest<HTMLButtonElement>(this.selectors.taskDeleteButton)
   }
 
   getToggleCheckbox(target: EventTarget | null): HTMLInputElement | null {
     if (!(target instanceof HTMLElement)) return null
 
-    return target.closest<HTMLInputElement>('[data-js-todo-toggle]')
+    return target.closest<HTMLInputElement>(this.selectors.taskToggleCheckbox)
   }
 }
 

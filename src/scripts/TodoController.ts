@@ -1,6 +1,7 @@
 import TodoDOM from './TodoDOM.ts'
 import TodoRenderer from './TodoRenderer.ts'
 import TodoService from './TodoService.ts'
+import stateClasses from './constants/stateClasses.ts'
 
 class TodoController {
   service: TodoService
@@ -28,7 +29,7 @@ class TodoController {
   handleAddTask = async (event: Event) => {
     event.preventDefault()
 
-    const title = this.dom.getValueAddInput()
+    const title = this.dom.getNewTaskTitle()
     if (!title) return
 
     await this.service.addTask(title)
@@ -37,7 +38,7 @@ class TodoController {
   }
 
   handleSearchTask = () => {
-    const titleSearch = this.dom.getValueSearchInput()
+    const titleSearch = this.dom.getSearchQuery()
 
     this.service.setSearchQuery(titleSearch ?? '')
 
@@ -53,7 +54,7 @@ class TodoController {
     const taskElement = this.dom.getTaskElement(event.target)
     if (!taskElement) return
 
-    taskElement.classList.add('is-disappearing')
+    taskElement.classList.add(stateClasses.isDisappearing)
 
     setTimeout(() => {
       void this.service.deleteTask(taskId).then(() => {
@@ -63,7 +64,7 @@ class TodoController {
   }
 
   handleDeleteAllTasks = async () => {
-    await this.service.deleteAll()
+    await this.service.deleteAllTasks()
     this.updateView()
   }
 
@@ -84,7 +85,7 @@ class TodoController {
     const task = this.service.getTaskById(taskId)
     if (!task) return
 
-    this.renderer.renderDetailsTask(task)
+    this.renderer.renderTaskDetails(task)
   }
 
   handleTodoListClick = async (event: Event) => {
@@ -122,16 +123,16 @@ class TodoController {
   }
 
   bindEvents() {
-    this.dom.newTaskFormElement?.addEventListener('submit', async (event) => {
+    this.dom.newTaskFormElement.addEventListener('submit', async (event) => {
       await this.handleAddTask(event)
     })
-    this.dom.searchTaskInputElement?.addEventListener('input', () => {
+    this.dom.searchTaskInputElement.addEventListener('input', () => {
       void this.handleSearchTask()
     })
-    this.dom.todoListElement?.addEventListener('click', (event) => {
+    this.dom.todoListElement.addEventListener('click', (event) => {
       void this.handleTodoListClick(event)
     })
-    this.dom.deleteAllButtonElement?.addEventListener('click', () => {
+    this.dom.deleteAllButtonElement.addEventListener('click', () => {
       void this.handleDeleteAllTasks()
     })
   }

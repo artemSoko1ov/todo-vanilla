@@ -46,7 +46,7 @@ class TodoService {
     this.store.setTasks(tasks)
   }
 
-  async deleteAll() {
+  async deleteAllTasks() {
     this.store.clearTasks()
 
     const tasks = await this.repository.deleteAllTasks()
